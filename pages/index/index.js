@@ -15,17 +15,19 @@ var showBusySuccess = text => wx.showToast({
 
 Page({
   data: {
-    online: 1,
-    bulb: 0
+    online: 0,//系统状态
+    bulb: 0//灯状态
   },
 
-  onLoad() {
+  onShow() {
     var that = this;
     showBusyLoading("初始化中");
+    //获取系统状态
     app.get(url.api.operationPiStatusUrl).then(function(res) {
       that.setData({
         online: Number(res.datas)
       }, function() {
+        //获取灯的状态
         app.get(url.api.bulbStatusUrl).then(function(res) {
           that.setData({
             bulb: Number(res.datas)
@@ -42,6 +44,9 @@ Page({
     });
   },
 
+    /**
+   * 对灯的操作
+   */
   switchBulb(e) {
     var that = this;
     let value = Number(e.currentTarget.dataset.value)
@@ -60,6 +65,9 @@ Page({
     });
   },
 
+  /**
+   * 设备下线处理
+   */
   quit() {
     var that = this;
     let quitUrl = url.api.sendCommandUrl + "?method=QUIT_PYTHON&value=1"
